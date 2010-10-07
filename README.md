@@ -6,10 +6,13 @@ The magic happens by using the [Apache Ant](http://ant.apache.org/) API to set p
 	
 Normally in Apache Ant, you can set properties using this syntax: 
 	
-	<property name="environment" value="DEVELOPMENT"/>
+    <property name="environment" value="DEVELOPMENT"/>
 
-**ant.js** adds two new attributes to the `<property/>` task: `argv` and `default`.
+**ant.js** includes two new attributes: `argv` and `default`.
 
-    <property name="environment" argv="env" default="DEV"/>
+    <antjs:property name="environment" argv="env" default="DEVELOPMENT"/>
 
-This is just a framework for setting properties. You need to define what happens in `ant.js`, but some examples are included.
+  - `argv` is the name of a property set on the command line (`-Denv=DEV`).
+  - `default` says that you're explicitly using `argv` (and not `value`) and to fallback if that's not set. 
+
+This is just a framework for setting properties, *which is still a little in flux*.
