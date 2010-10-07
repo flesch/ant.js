@@ -1,31 +1,25 @@
-(function(self, project, attributes, undefined){
+(function(undefined){
 
-	// TIMESTAMP
-	if (attributes.get('name') == 'timestamp') {
-		// We're expecting the SimpleDateFormat format: http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
-		// But have customized T to map to the number of milliseconds since January 1, 1970, 00:00:00 GMT.
-		// Get either the "argv" value ("time" in this case), or the "default".
-		var format = (project.getProperty(attributes.get('argv')) || attributes.get('default')).replace('T', Number(new Date).toString());
-		// Instead of just setting "timestamp" to "time", we're using that as a SimpleDateFormat (java) pattern.
-		attributes.put('value', (new java.text.SimpleDateFormat(format)).format(new Date));
-	}
-	
-	// INPUT
-	if (attributes.get('name') == 'username') {
-		// Using the Ant API, we'll dynamically create an <input/> task.
-		// <input message="Please enter your username:" addproperty="username"/>
-		var input = project.createTask('input');
-		input.setMessage('Enter your username:');
-		input.setAddproperty('bee.temp.username');
-		input.execute();
-		
-		// We'd decided you need to enter a full e-mail address, but can optionally just enter your name.
-		// If that happens, this completes it for you.
-		var user = project.getProperty('bee.temp.username');		
-		attributes.put('value', !/@/.test(user) ? user+'@fles.ch' : user);
-	}
-	
-	// Set the PROPERTY. If we have a VALUE, we'll use that. Otherwise, evalaute ARGV or fallback to the default.
-	project.setProperty(attributes.get('name'), attributes.get('value') || project.getProperty(attributes.get('argv')) || attributes.get('default'));
-	
-})(self, self.project, attributes);
+    // Make sure we're in the <antjs:property/> task. In the future,
+    // we may want to define other tasks using this file.
+    if (self.getTaskName() == 'antjs:property') {
+            
+        // Rather than set the "timestamp" property to something like "yyyy-MM-dd",
+        // let's use it as a SimpleDateFormat pattern:
+        // http://download.oracle.com/javase/1.4.2/docs/api/java/text/SimpleDateFormat.html
+        // Let's also allow "T" to be used as the number of milliseconds since January 1, 1970, 00:00:00 GMT.
+        if (attributes.get('name') == 'timestamp') {
+            // If a pattern was passed in from the command line use it, or fallback to a predefined pattern.
+            var format = (project.getProperty(attributes.get('argv')) || attributes.get('default')).replace('T', Number(new Date).toString());
+            // Update the "value" attribute.
+            attributes.put('value', (new java.text.SimpleDateFormat(format)).format(new Date));
+        }
+        
+        // Using the Ant API, let's actually set the property now.
+        // Notice we're evaluating each attribute instead of caching them above. This allows
+        // you to mutate not only the value, but the attributes themselves.
+        project.setProperty(attributes.get('name'), attributes.get('value') || project.getProperty(attributes.get('argv')) || attributes.get('default'));
+        
+    }
+
+})();
