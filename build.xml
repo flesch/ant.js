@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="ant.js" basedir="." default="build" xmlns:antjs="http://github.com/johnflesch/ant.js">
+
+	<!-- ant.js | http://github.com/johnflesch/ant.js -->
+	<scriptdef name="property" language="javascript" uri="http://github.com/johnflesch/ant.js" src="./ant.js">
+		<attribute name="name"/>
+		<attribute name="value"/>
+		<attribute name="argv"/>
+		<attribute name="default"/>
+	</scriptdef>	
+
+
+	<target name="build">
+		
+		<!-- Example: Set the timestamp based on a date format. -->
+		<antjs:property name="timestamp" argv="date" default="yyyy-MM-dd-T"/>
+		<echo message="TIMESTAMP: ${timestamp}"/>
+		
+		<!-- Example: Input -->
+		<antjs:property name="username"/>
+		<echo message="USERNAME: ${username}"/>
+
+	</target>
+	
+</project>
